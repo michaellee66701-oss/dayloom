@@ -1,0 +1,14 @@
+import fs from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {build} from 'esbuild';
+const root=new URL('../',import.meta.url);
+const read=name=>fs.readFile(new URL('src/'+name,root),'utf8');
+const result=await build({entryPoints:[fileURLToPath(new URL('src/sync.mjs',root))],bundle:true,write:false,minify:true,format:'iife',platform:'browser',target:['es2022'],legalComments:'none'});
+let html=await read('index.html');
+const css=(await read('style.css'))+'\n'+await read('sync.css');
+const js=(await read('courses.js'))+'\n'+await read('app.js')+'\n'+await read('cloud-config.js')+'\n'+result.outputFiles[0].text;
+html=html.replace('<link rel="stylesheet" href="style.css">',()=>`<style>${css}</style>`).replace('<script src="courses.js"></script><script src="app.js"></script>',()=>`<script>${js.replaceAll('</script','<\\/script')}</script>`);
+const notices=await fs.readFile(new URL('THIRD_PARTY_NOTICES.txt',root),'utf8');
+html=html.replace('</body>',()=>`<script type="text/plain" id="third-party-notices">${notices.replaceAll('</script','<\\/script')}</script></body>`);
+await fs.writeFile(new URL('index.html',root),html);
+console.log(`Built index.html (${Buffer.byteLength(html)} bytes); no external CDN dependencies.`);

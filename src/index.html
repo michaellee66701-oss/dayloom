@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f3">
+  <meta name="description" content="把任务放进上午、下午和晚上。日历计划、完成记录、截止日与考试倒数，轻松安排每一天。">
+  <title>时序 · 我的专注计划</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233e6151'/%3E%3Cpath d='M18 20h28M18 32h21M18 44h12' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#" aria-label="时序首页"><span class="brand-mark"><i></i><i></i><i></i></span><span>时序<small>DAYLOOM</small></span></a>
+    <div class="workspace-label">我的学习空间</div>
+    <nav id="navigation" aria-label="主要导航"></nav>
+    <div id="mini-calendar" class="mini-calendar"></div>
+    <div class="rhythm"><span class="eyebrow">MY DAILY RHYTHM</span><h3>一天，三次专注。</h3><p>把任务放进时间里，<br>也给自己留一点余地。</p><div class="rhythm-lines"><i></i><i></i><i></i></div></div>
+    <div class="sidebar-bottom"><span class="save-dot"></span><span id="save-status">自动保存在此浏览器</span><button class="icon-button" data-action="export" aria-label="导出备份" title="导出备份"></button></div>
+  </aside>
+  <div class="page-shell">
+    <header class="topbar"><span class="breadcrumb">我的空间 <span>/</span> <b id="breadcrumb-title">日历计划</b></span><div class="topbar-actions"><span class="today-label" id="today-label"></span><button class="button primary" data-action="new-task">＋ 新建任务</button></div></header>
+    <main id="main"></main>
+  </div>
+</div>
+<dialog id="editor" aria-labelledby="dialog-title"><div id="dialog-content"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<script src="courses.js"></script><script src="app.js"></script>
+</body></html>

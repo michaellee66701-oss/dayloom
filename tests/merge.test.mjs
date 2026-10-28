@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {copy,mergePlans,resolveConflicts} from '../src/merge.mjs';
+const base={version:1,tasks:[{id:'a',title:'A',done:false,minutes:45}],milestones:[],settings:{slots:{morning:['09:00','11:30']},courseHints:true},exerciseDone:{}};
+let local=copy(base),remote=copy(base);local.tasks[0].done=true;remote.tasks[0].title='B';let result=mergePlans(base,local,remote);assert.equal(result.conflicts.length,0);assert.deepEqual(result.data.tasks[0],{id:'a',title:'B',done:true,minutes:45});
+local.tasks.push({id:'b',title:'B'});remote.tasks.push({id:'c',title:'C'});assert.equal(mergePlans(base,local,remote).data.tasks.length,3);
+local=copy(base);remote=copy(base);local.tasks=[];result=mergePlans(base,local,remote);assert.equal(result.data.tasks.length,0);assert.equal(result.conflicts.length,0);
+remote.tasks[0].title='Edited';result=mergePlans(base,local,remote);assert.equal(result.conflicts.length,1);assert.equal(resolveConflicts(result,['remote']).tasks[0].title,'Edited');assert.equal(resolveConflicts(result,['local']).tasks.length,0);
+local=copy(base);remote=copy(base);local.tasks[0].title='Local';remote.tasks[0].title='Remote';result=mergePlans(base,local,remote);assert.equal(result.conflicts.length,1);assert.equal(resolveConflicts(result,['remote']).tasks[0].title,'Remote');
+local=copy(base);remote=copy(base);local.exerciseDone['2026-10-28']=true;remote.exerciseDone['2026-10-29']=true;assert.equal(Object.keys(mergePlans(base,local,remote).data.exerciseDone).length,2);
+local=copy(base);remote=copy(base);local.settings.courseHints=false;remote.settings.slots.morning=['08:00','10:30'];result=mergePlans(base,local,remote);assert.equal(result.conflicts.length,0);assert.equal(result.data.settings.courseHints,false);assert.equal(result.data.settings.slots.morning[0],'08:00');
+console.log('Merge checks passed: independent fields, offline additions, deletions, edit/delete conflicts, same-field conflicts, exercise, settings.');

@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# Generated SDK bundle contains significant trailing whitespace inside string literals.
+index.html whitespace=-blank-at-eol
